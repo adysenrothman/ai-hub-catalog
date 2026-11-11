@@ -1,4 +1,4 @@
-package servingruntime
+package catalog
 
 import (
 	"bytes"

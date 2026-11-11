@@ -13,11 +13,11 @@
     "files": [
       {
         "name": "other-models-catalog.yaml",
-        "sha256": "d5d8418cd1d87ad202c47abfcdc8ee7304bee6b018e72a5c4f0c4842cbc9590a"
+        "sha256": "927fe1b1c144187f4f7995c8a9e196cae686a13de33fda7ee59e3e164dc93de2"
       },
       {
         "name": "validated-models-catalog.yaml",
-        "sha256": "2ec1c754a21a0a4053a4402eadb064f6e4c2f06e46beea53c9f92d821405147e"
+        "sha256": "93ce9833a0f0c13c33d849664d420534bcdd696f3e768e42489b640051e27272"
       }
     ]
   },
