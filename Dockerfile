@@ -18,15 +18,21 @@ COPY go.mod go.sum ./
 COPY cmd/release-candidate/ cmd/release-candidate/
 COPY internal/releasecandidate/ internal/releasecandidate/
 COPY cmd/serving-runtime-catalog/ cmd/serving-runtime-catalog/
-COPY internal/servingruntime/ internal/servingruntime/
-COPY pkg/types/ pkg/types/
+COPY cmd/serving-runtime-validate/ cmd/serving-runtime-validate/
+COPY internal/catalog/ internal/catalog/
+COPY internal/config/ internal/config/
+COPY internal/github/ internal/github/
+COPY internal/registry/ internal/registry/
+COPY pkg/ pkg/
 RUN CGO_ENABLED=0 go build -o /usr/local/bin/release-candidate ./cmd/release-candidate && \
-    CGO_ENABLED=0 go build -o /usr/local/bin/serving-runtime-catalog ./cmd/serving-runtime-catalog
+    CGO_ENABLED=0 go build -o /usr/local/bin/serving-runtime-catalog ./cmd/serving-runtime-catalog && \
+    CGO_ENABLED=0 go build -o /usr/local/bin/serving-runtime-validate ./cmd/serving-runtime-validate
 COPY data/ data/
 COPY input/ input/
 COPY release/ release/
 COPY scripts/prepare-image.sh scripts/check-runtime-catalogs.sh scripts/
-RUN sh scripts/check-runtime-catalogs.sh && serving-runtime-catalog --check
+RUN sh scripts/check-runtime-catalogs.sh && serving-runtime-catalog --check && \
+    serving-runtime-validate --catalog data/redhat-serving-runtimes-catalog.yaml
 
 # Only immutable revisions are accepted. No benchmark data or pre-staged
 # build/release-candidate directory is needed in the local build context.
