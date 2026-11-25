@@ -18,28 +18,32 @@ COPY go.mod go.sum ./
 COPY cmd/release-candidate/ cmd/release-candidate/
 COPY internal/releasecandidate/ internal/releasecandidate/
 COPY cmd/serving-runtime-catalog/ cmd/serving-runtime-catalog/
-COPY internal/servingruntime/ internal/servingruntime/
-COPY pkg/types/ pkg/types/
+COPY cmd/serving-runtime-validate/ cmd/serving-runtime-validate/
+COPY internal/catalog/ internal/catalog/
+COPY internal/config/ internal/config/
+COPY internal/github/ internal/github/
+COPY internal/registry/ internal/registry/
+COPY pkg/ pkg/
 RUN CGO_ENABLED=0 go build -o /usr/local/bin/release-candidate ./cmd/release-candidate && \
-    CGO_ENABLED=0 go build -o /usr/local/bin/serving-runtime-catalog ./cmd/serving-runtime-catalog
+    CGO_ENABLED=0 go build -o /usr/local/bin/serving-runtime-catalog ./cmd/serving-runtime-catalog && \
+    CGO_ENABLED=0 go build -o /usr/local/bin/serving-runtime-validate ./cmd/serving-runtime-validate
 COPY data/ data/
 COPY input/ input/
 COPY release/ release/
 COPY scripts/prepare-image.sh scripts/check-runtime-catalogs.sh scripts/
-RUN sh scripts/check-runtime-catalogs.sh && serving-runtime-catalog --check
+RUN sh scripts/check-runtime-catalogs.sh && serving-runtime-catalog --check && \
+    serving-runtime-validate --catalog data/redhat-serving-runtimes-catalog.yaml
 
 # Only immutable revisions are accepted. No benchmark data or pre-staged
 # build/release-candidate directory is needed in the local build context.
 ARG BENCHMARK_DATA_REPOSITORY=https://github.com/red-hat-data-services/models-perf-benchmark-data.git
-ARG BENCHMARK_REVISION=717fe9fcfe48582099bd2f4a33bf00db66a7447e
+ARG BENCHMARK_REVISION=e26db367a82ef4fbf349fa069945b0641da14c08
 ARG CATALOG_DATA_REPOSITORY=https://github.com/red-hat-data-services/ai-hub-catalog.git
 ARG CATALOG_REVISION=
 ARG VALIDATE_RELEASE
 # With VALIDATE_RELEASE=true, callers must use --no-cache (Make does this).
 # Changes to secret-mounted loader scripts do not invalidate the RUN cache.
 RUN --mount=type=secret,id=github_token \
-    --mount=type=secret,id=rhoai-3.4 \
-    --mount=type=secret,id=rhoai-3.5 \
     --mount=type=secret,id=rhoai-3.6 \
     --mount=type=secret,id=models-perf-benchmark-data-clone/token \
     sh scripts/prepare-image.sh /prepared

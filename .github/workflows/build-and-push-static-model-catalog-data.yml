@@ -10,8 +10,9 @@ on:
       - 'release/**'
       - 'cmd/release-candidate/**'
       - 'cmd/serving-runtime-catalog/**'
-      - 'internal/servingruntime/**'
-      - 'pkg/types/**'
+      - 'cmd/serving-runtime-validate/**'
+      - 'internal/catalog/**'
+      - 'pkg/**'
       - 'go.mod'
       - 'go.sum'
       - 'internal/releasecandidate/**'
@@ -33,8 +34,9 @@ on:
       - 'release/**'
       - 'cmd/release-candidate/**'
       - 'cmd/serving-runtime-catalog/**'
-      - 'internal/servingruntime/**'
-      - 'pkg/types/**'
+      - 'cmd/serving-runtime-validate/**'
+      - 'internal/catalog/**'
+      - 'pkg/**'
       - 'go.mod'
       - 'go.sum'
       - 'internal/releasecandidate/**'
@@ -99,7 +101,6 @@ jobs:
       - name: Verify payload as an arbitrary non-root user
         run: |
           docker run --rm --user 1001230000 --entrypoint /bin/sh unified-model-catalog-data:fixture -c '
-            test -r /app/data/models-catalog.yaml &&
             test -r /app/data/validated-models-catalog.yaml &&
             test -s /app/data/redhat-serving-runtimes-catalog.yaml &&
             test -r /app/data/redhat-serving-runtimes-catalog.yaml &&
@@ -136,14 +137,10 @@ jobs:
         id: validation
         env:
           GITHUB_TOKEN: ${{ secrets.BENCHMARK_GITHUB_TOKEN }}
-          LOADER_RHOAI_3_4: ${{ secrets.RHOAI_3_4_LOADER_CHECK }}
-          LOADER_RHOAI_3_5: ${{ secrets.RHOAI_3_5_LOADER_CHECK }}
           LOADER_RHOAI_3_6: ${{ secrets.RHOAI_3_6_LOADER_CHECK }}
         run: |
           missing=()
           [ -n "$GITHUB_TOKEN" ] || missing+=(BENCHMARK_GITHUB_TOKEN)
-          [ -n "$LOADER_RHOAI_3_4" ] || missing+=(RHOAI_3_4_LOADER_CHECK)
-          [ -n "$LOADER_RHOAI_3_5" ] || missing+=(RHOAI_3_5_LOADER_CHECK)
           [ -n "$LOADER_RHOAI_3_6" ] || missing+=(RHOAI_3_6_LOADER_CHECK)
           if [ "${#missing[@]}" -ne 0 ]; then
             echo "::error::Release validation inputs unavailable: ${missing[*]}"
@@ -154,10 +151,8 @@ jobs:
           umask 077
           loader_dir="$RUNNER_TEMP/model-catalog-loader-checks"
           mkdir -p "$loader_dir"
-          printf '%s\n' "$LOADER_RHOAI_3_4" > "$loader_dir/rhoai-3.4"
-          printf '%s\n' "$LOADER_RHOAI_3_5" > "$loader_dir/rhoai-3.5"
           printf '%s\n' "$LOADER_RHOAI_3_6" > "$loader_dir/rhoai-3.6"
-          chmod 700 "$loader_dir/rhoai-3.4" "$loader_dir/rhoai-3.5" "$loader_dir/rhoai-3.6"
+          chmod 700 "$loader_dir/rhoai-3.6"
 
           make docker-build \
             CONTAINER_RUNTIME=docker \
