@@ -15,22 +15,6 @@ BINARY_UNIX=$(BINARY_NAME)_unix
 # Build parameters
 BUILD_DIR=build
 MAIN_PATH=./cmd/model-extractor
-RELEASE_CANDIDATE_DIR?=build/release-candidate
-FIXTURE_RELEASE_CANDIDATE_DIR?=build/release-candidate-fixture
-RUNTIME_CATALOG_FILES?=release/runtime-catalog-files.txt
-BENCHMARK_DATA_DIR?=
-BENCHMARK_DATA_REPOSITORY?=https://github.com/red-hat-data-services/models-perf-benchmark-data.git
-BENCHMARK_REVISION?=
-VALIDATE_RELEASE?=false
-CATALOG_DATA_REPOSITORY?=https://github.com/red-hat-data-services/ai-hub-catalog.git
-CATALOG_REVISION?=$(shell git rev-parse HEAD)
-GITHUB_TOKEN_FILE?=
-BENCHMARK_QUALIFICATION_REPORT?=
-MODEL_CATALOG_LOADER_CHECK_DIR?=
-FIXTURE_BENCHMARK_DATA_DIR=internal/releasecandidate/testdata/benchmarks
-FIXTURE_BENCHMARK_QUALIFICATION_REPORT=internal/releasecandidate/testdata/benchmark-qualification-report.json
-FIXTURE_LOADER_CHECK_DIR=internal/releasecandidate/testdata/loader-checks
-FIXTURE_SUPPORTED_VERSIONS=internal/releasecandidate/testdata/supported-model-catalog-versions.txt
 TEST_LOG?=$(BUILD_DIR)/test.log
 
 # Default data paths
@@ -262,6 +246,24 @@ lint-serving-runtimes:
 
 # Process all model indexes, MCP server catalogs, and agent catalogs
 process: process-models process-redhat-mcp process-partner-mcp process-community-mcp process-agents
+
+# Downstream release validation and image build parameters
+RELEASE_CANDIDATE_DIR?=build/release-candidate
+FIXTURE_RELEASE_CANDIDATE_DIR?=build/release-candidate-fixture
+RUNTIME_CATALOG_FILES?=release/runtime-catalog-files.txt
+BENCHMARK_DATA_DIR?=
+BENCHMARK_DATA_REPOSITORY?=https://github.com/red-hat-data-services/models-perf-benchmark-data.git
+BENCHMARK_REVISION?=
+VALIDATE_RELEASE?=false
+CATALOG_DATA_REPOSITORY?=https://github.com/red-hat-data-services/ai-hub-catalog.git
+CATALOG_REVISION?=$(shell git rev-parse HEAD)
+GITHUB_TOKEN_FILE?=
+BENCHMARK_QUALIFICATION_REPORT?=
+MODEL_CATALOG_LOADER_CHECK_DIR?=
+FIXTURE_BENCHMARK_DATA_DIR=internal/releasecandidate/testdata/benchmarks
+FIXTURE_BENCHMARK_QUALIFICATION_REPORT=internal/releasecandidate/testdata/benchmark-qualification-report.json
+FIXTURE_LOADER_CHECK_DIR=internal/releasecandidate/testdata/loader-checks
+FIXTURE_SUPPORTED_VERSIONS=internal/releasecandidate/testdata/supported-model-catalog-versions.txt
 
 # Downstream: every catalog that supported RHOAI versions load must be present.
 # Kept apart from upstream's check-serving-runtimes so a sync can take that target as-is.
