@@ -37,7 +37,7 @@ RUN sh scripts/check-runtime-catalogs.sh && serving-runtime-catalog --check && \
 # Only immutable revisions are accepted. No benchmark data or pre-staged
 # build/release-candidate directory is needed in the local build context.
 ARG BENCHMARK_DATA_REPOSITORY=https://github.com/red-hat-data-services/models-perf-benchmark-data.git
-ARG BENCHMARK_REVISION=0a354aa30804636565d9f9b9a0a026c2830aff04
+ARG BENCHMARK_REVISION=e26db367a82ef4fbf349fa069945b0641da14c08
 ARG CATALOG_DATA_REPOSITORY=https://github.com/red-hat-data-services/ai-hub-catalog.git
 ARG CATALOG_REVISION=
 ARG VALIDATE_RELEASE
